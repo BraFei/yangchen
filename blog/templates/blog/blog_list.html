@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}我的网站{% endblock %}
+{% block nav_blog_active %}active{% endblock %}
+
+{% load staticfiles %}
+{% block header_extends %}
+    <link rel="stylesheet" href="{% static 'blog/blog.css' %}">
+{% endblock %}
+
+{# 页面内容 #}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-8 col-md-9 col-lg-10">
+				<div class="panel panel-default">
+					<div class="paginator">
+						<h3>
+                        共有{{ page_of_blogs.paginator.count }}条记录，
+                        当前第{{ page_of_blogs.number }}页，共{{ page_of_blogs.paginator.num_pages }}页
+						</h3>
+						<ul class="pagination">
+							{# 上一页 #}
+							<li>
+								{% if page_of_blogs.has_previous %}
+									<a href="?page={{ page_of_blogs.previous_page_number }}" aria-label="Previous">
+										<span aria-hidden="true">上一页</span>
+									</a>
+								{% else %}
+									<span aria-hidden="true">上一页</span>
+								{% endif %}
+							</li>
+							{# 全部页码 #}
+							{% for page_num in page_range %}
+								{% if page_num == page_of_blogs.number %}
+									<li class="active"><span>{{ page_num }}</span></li>
+								{% else %}
+									{% if page_num == '...' %}
+										<li><span>{{ page_num }}</span></li>
+									{% else %}
+										<li><a href="?page={{ page_num }}">{{ page_num }}</a></li>
+									{% endif %}
+								{% endif %}
+							{% endfor %}
+							{# 下一页 #}
+							<li>
+								{% if page_of_blogs.has_next %}
+									<a href="?page={{ page_of_blogs.next_page_number }}" aria-label="Next">
+										<span aria-hidden="true">下一页</span>
+									</a>
+								{% else %}
+									<span aria-hidden="true">下一页</span>
+								{% endif %}
+							</li>
+						</ul>
+                </div>
+					<div class="panel-heading">列表</div>
+					<!-- Default panel contents -->
+					  <!-- Table -->
+					  <table class="table">
+						  <tr>
+							  <td>浓度值</td>
+							  <td>时  间</td>
+						  </tr>
+						  {% for blog in blogs %}
+                            <tr>
+								<td>{{ blog.concentration }}</td>
+								<td> {{ blog.created_time|date:"Y-m-d H:m:s"  }}</td>
+                            </tr>
+                        {% empty %}
+                            <div class="blog">
+                                <h3 style="text-align: center">&---暂无数据，敬请期待---&</h3>
+                            </div>
+                        {% endfor %}
+					  </table>
+				</div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
